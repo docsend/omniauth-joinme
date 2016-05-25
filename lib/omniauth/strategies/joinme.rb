@@ -37,6 +37,16 @@ module OmniAuth
         redirect client.implicit.authorize_url({:redirect_uri => parse_callback_url}.merge(authorize_params))
       end
 
+      def callback_phase
+        if request.params['isAuthorizationRenewed'].present?
+          # Our response doesn't contain any access token info so let's return
+          # to our app's callback
+          call_app!
+        else
+          super
+        end
+      end
+
       protected
 
       def build_access_token
