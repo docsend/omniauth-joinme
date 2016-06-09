@@ -15,20 +15,22 @@ module OmniAuth
       uid{ raw_info['email'] }
 
       info do
+        prune!(
         {
-          :name => raw_info['fullName'],
-          :email => raw_info['email']
-        }
+          :name => raw_info['full_name'],
+          :email => raw_info['email'],
+          :conference_settings => raw_info['conference_settings']
+        })
       end
 
       extra do
-        {
+        prune!({
           'raw_info' => raw_info
-        }
+        })
       end
 
       def raw_info
-        @raw_info ||= access_token.get('https://api.join.me/v1/user').parsed
+        @raw_info ||= keys_to_underscore(access_token.get('user').parsed)
       end
 
       def request_phase
@@ -64,6 +66,28 @@ module OmniAuth
 
       def build_access_token
         ::OAuth2::AccessToken.from_hash(client, {:access_token => request.params['access_token']})
+      end
+
+      private
+
+      def prune!(hash)
+        hash.delete_if do |key, value|
+          prune!(value) if value.is_a?(Hash)
+          value.nil? || (value.respond_to?(:empty) && value.empty?)
+        end
+      end
+
+      def keys_to_underscore(hash)
+        new_hash = {}
+        hash.each do |key, value|
+          value = keys_to_underscore(value) if value.is_a?(Hash)
+          new_key = key.gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
+                        gsub(/([a-z\d])([A-Z])/,'\1_\2').
+                        tr('-', '_').
+                        downcase
+          new_hash[new_key] = value
+        end
+        new_hash
       end
     end
   end
