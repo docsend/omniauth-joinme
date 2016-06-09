@@ -32,7 +32,6 @@ module OmniAuth
       end
 
       def request_phase
-        parse_callback_url = full_host + script_name + '/account/auth/joinme/parse_callback' + query_string
         # Using implicit strategy will set response_type = token
         redirect client.implicit.authorize_url({:redirect_uri => parse_callback_url}.merge(authorize_params))
       end
@@ -44,6 +43,20 @@ module OmniAuth
           call_app!
         else
           super
+        end
+      end
+
+      def parse_callback_url
+        full_host + script_name + parse_callback_path + query_string
+      end
+
+      def parse_callback_path
+        @parse_callback_path ||= begin
+          path = options[:parse_callback_path] if options[:parse_callback_path].is_a?(String)
+          path ||= current_path if options[:parse_callback_path].respond_to?(:call) && options[:parse_callback_path].call(env)
+          path ||= custom_path(:request_path)
+          path ||= "#{path_prefix}/#{name}/parse_callback"
+          path
         end
       end
 
