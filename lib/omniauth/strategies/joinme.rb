@@ -3,7 +3,7 @@ require 'omniauth/strategies/oauth2'
 
 module OmniAuth
   module Strategies
-    class JoinMe < OmniAuth::Strategies::OAuth2
+    class Joinme < OmniAuth::Strategies::OAuth2
 
       option :name, 'joinme'
       option :scope, 'user_info'
@@ -39,5 +39,3 @@ module OmniAuth
     end
   end
 end
-
-OmniAuth.config.add_camelization 'joinme', 'JoinMe'
