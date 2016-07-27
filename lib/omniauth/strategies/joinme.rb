@@ -31,11 +31,10 @@ module OmniAuth
         @raw_info ||= MultiJson.decode(access_token.get('user').body)
       end
 
-      private
-
-        def callback_url
-          options[:redirect_uri] || (full_host + script_name + callback_path)
-        end
+      # Exclude query string in callback_url to prevent redirect_uri mismatch
+      def callback_url
+        options[:callback_url] || (full_host + script_name + callback_path)
+      end
 
     end
   end
