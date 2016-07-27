@@ -31,6 +31,12 @@ module OmniAuth
         @raw_info ||= MultiJson.decode(access_token.get('user').body)
       end
 
+      private
+
+        def callback_url
+          options[:redirect_uri] || (full_host + script_name + callback_path)
+        end
+
     end
   end
 end
