@@ -27,6 +27,14 @@ module OmniAuth
         { 'raw_info' => raw_info }
       end
 
+      # Merge the refresh_token into the credentials hash
+      # even if join.me doesn't return an expiration in its /token response
+      credentials do
+        hash = {'token' => access_token.token}
+        hash.merge!('refresh_token' => access_token.refresh_token) if access_token.refresh_token
+        hash
+      end
+
       def raw_info
         @raw_info ||= MultiJson.decode(access_token.get('user').body)
       end

@@ -36,6 +36,12 @@ class JoinmeTest < Minitest::Test
     assert_equal url, strategy.callback_url
   end
 
+  def test_returns_url_from_callback_url_option
+    url = 'https://auth.myapp.com/auth/joinme/callback'
+    @options = { callback_url: url }
+    assert_equal strategy.credentials['refresh_token'], strategy.access_token.refresh_token
+  end
+
   private
 
     def strategy
@@ -43,7 +49,18 @@ class JoinmeTest < Minitest::Test
         args = [@client_id, @client_secret, @options].compact
         OmniAuth::Strategies::Joinme.new(nil, *args).tap do |strategy|
           strategy.stubs(:request).returns(@request)
+          strategy.stubs(:access_token).returns(access_token)
         end
+      end
+    end
+
+    def access_token
+      @client ||= OAuth2::Client.new 'id', 'secret', {:site => 'example.com'}
+      @access_token ||= begin
+        OAuth2::AccessToken.from_hash @client, {
+          'access_token' => 'token',
+          'refresh_token' => 'refresh_token'
+        }
       end
     end
 
