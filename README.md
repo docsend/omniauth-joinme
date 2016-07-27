@@ -28,33 +28,12 @@ This is an example that you might put into a Rails initializer at `config/initia
 
 ```ruby
 Rails.application.config.middleware.use OmniAuth::Builder do
-  provider :joinme, ENV['JOINME_CLIENT_ID']
+  provider :joinme, ENV['JOINME_CLIENT_ID'], ENV['JOINME_SECRET']
 end
 ```
 
 You can now access the OmniAuth join.me OAuth2 URL: `/auth/joinme`.
 
-## Setup Additional Parse Callback Route
-
-Because the join.me API is currently only supporting the OAuth 2.0 implicit grant scenario, an additional route is required to parse join.me's response.
-
-Create an additional route for `/auth/joinme/parse_callback` and render an html page that uses JavaScript to parse the response and return the parameters to the server.
-For example:
-
-```javascript
-  var queryString = location.hash.substring(1);
-  var request = new XMLHttpRequest();
-  request.open('POST', '/account/auth/joinme/callback', true);
-  request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-  request.onreadystatechange = function(e) {
-    if (request.readyState == 4) {
-      if (request.status == 200) {
-        window.location = some_new_location;
-      }
-    }
-  }
-  request.send(queryString);
-```
 
 ## Granting Additional Permissions to Your Application
 
@@ -68,7 +47,7 @@ By default, omniauth-joinme requests the following permissions:
 You can configure the scope option:
 
 ```ruby
-provider :joinme, ENV['JOINME_CLIENT_ID'], :scope => 'user_info start_meeting'
+provider :joinme, ENV['JOINME_CLIENT_ID'], ENV['JOINME_SECRET'], :scope => 'user_info start_meeting'
 ```
 
 ## Contributing
@@ -82,4 +61,3 @@ provider :joinme, ENV['JOINME_CLIENT_ID'], :scope => 'user_info start_meeting'
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
