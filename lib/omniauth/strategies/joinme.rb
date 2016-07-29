@@ -36,7 +36,7 @@ module OmniAuth
       end
 
       def raw_info
-        @raw_info ||= MultiJson.decode(access_token.get('user').body)
+        @raw_info ||= keys_to_underscore(MultiJson.decode(access_token.get('user').body))
       end
 
       # Exclude query string in callback_url to prevent redirect_uri mismatch
@@ -44,6 +44,20 @@ module OmniAuth
         options[:callback_url] || (full_host + script_name + callback_path)
       end
 
+      private
+
+      def keys_to_underscore(hash)
+        new_hash = {}
+        hash.each do |key, value|
+          value = keys_to_underscore(value) if value.is_a?(Hash)
+          new_key = key.gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
+                    gsub(/([a-z\d])([A-Z])/,'\1_\2').
+                    tr('-', '_').
+                    downcase
+          new_hash[new_key] = value
+        end
+        new_hash
+      end
     end
   end
 end
