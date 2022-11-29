@@ -1,24 +1,28 @@
 # OmniAuth join.me Strategy
 
-A join.me OAuth2 strategy for OmniAuth
+A join.me OAuth2 strategy for OmniAuth.
 
-For more details, read the join.me documentation: [https://developer.join.me/docs](https://developer.join.me/docs)
+For more details, read [the join.me documentation](https://developer.join.me/docs).
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'omniauth-joinme'
+gem "omniauth-joinme"
 ```
 
 And then execute:
 
-    $ bundle
+```console
+$ bundle
+```
 
 Or install it yourself as:
 
-    $ gem install omniauth-joinme
+```console
+$ gem install omniauth-joinme
+```
 
 ## Usage
 
@@ -28,7 +32,7 @@ This is an example that you might put into a Rails initializer at `config/initia
 
 ```ruby
 Rails.application.config.middleware.use OmniAuth::Builder do
-  provider :joinme, ENV['JOINME_CLIENT_ID'], ENV['JOINME_SECRET']
+  provider :joinme, ENV["JOINME_CLIENT_ID"], ENV["JOINME_SECRET"]
 end
 ```
 
@@ -38,16 +42,18 @@ You can now access the OmniAuth join.me OAuth2 URL: `/auth/joinme`.
 ## Granting Additional Permissions to Your Application
 
 With the join.me API, you have the ability to specify which permissions you want users to grant your application.
-For more details, read the join.me documentation: https://developer.join.me/docs
+For more details, read [the join.me documentation](https://developer.join.me/docs).
 
 By default, omniauth-joinme requests the following permissions:
 
-    'user_info'
+```ruby
+"user_info"
+```
 
 You can configure the scope option:
 
 ```ruby
-provider :joinme, ENV['JOINME_CLIENT_ID'], ENV['JOINME_SECRET'], :scope => 'user_info start_meeting'
+provider :joinme, ENV["JOINME_CLIENT_ID"], ENV["JOINME_SECRET"], scope: "user_info start_meeting"
 ```
 
 ## Contributing
