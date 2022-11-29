@@ -1,2 +1,2 @@
-require 'omniauth-joinme/version'
-require 'omniauth/strategies/joinme'
+require "omniauth-joinme/version"
+require "omniauth/strategies/joinme"
